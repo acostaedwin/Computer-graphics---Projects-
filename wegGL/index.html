@@ -1,0 +1,54 @@
+<html>
+        <head>
+        <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+        <script src="https://code.jquery.com/jquery-3.4.0.min.js"></script>
+        <link rel="stylesheet" type="text/css" href="styles.css">
+        </head>
+        <body>
+        <div id="navbar"><span>Three.js Tutorial</span></div>
+        <script src="https://threejs.org/build/three.min.js"></script>
+        <script src="js/objects.js"></script>
+        <script>
+
+var renderer = new THREE.WebGLRenderer();
+//renderer.setSize(1200,550);
+renderer.setSize( window.innerWidth, window.innerHeight );
+document.body.appendChild( renderer.domElement );
+var camera = new THREE.PerspectiveCamera( 450, window.innerWidth / window.innerHeight, 1, 500 );
+camera.position.set(0,0,100);
+camera.lookAt(0,0,0);
+
+
+var scene = new THREE.Scene();
+
+//limite del plano
+scene.add(new Box(0,0,85).Print());
+scene.add(new Point(-85,85,"0,255,0",2).Print());
+scene.add(new Point(85,85,"0,255,0",2).Print());
+scene.add(new Point(-85,-85,"0,255,0",2).Print());
+scene.add(new Point(85,-85,"0,255,0",2).Print());
+scene.add(new Point(0,0,"0,255,0",1).Print());
+
+//poliginos que vamos a rellenar
+scene.add(new Box(0,0,30).Print());
+scene.add(new Box(-50,0,5).Print());
+scene.add(new Box(50,0,5).Print());
+
+
+// pixels = new Pixel[10][10];
+var pixels={};// = [{"0":new Pixel(0,0,"0,0,0")}];
+for (var x=-84; x<85; x++)
+    for (var y=-84; y<85; y++)
+        pixels[x+","+y]=new Pixel(x,y,"255,0,0");
+
+//console.log(pixels);
+
+
+//alert(JSON.stringify(pixels));
+
+
+renderer.render(scene,camera);
+
+        </script>
+        </body>
+</html>
