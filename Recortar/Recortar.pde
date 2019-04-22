@@ -13,7 +13,8 @@ void setup() {
   
   lineas= new ArrayList();
   lineas.add(new Linea(20,650,600,150));
-  lineas.add(new Linea(20,150,600,650));  
+  lineas.add(new Linea(20,150,600,650));
+  //lineas.add(new Linea(20,150,20,650));
   for(int i=80;i<800;i+=80)    
     lineas.add(new Linea(i,150,i,650));  
   RecortarLinea rl2= new RecortarLinea(40,600,40,200,600,200,600,600,lineas);
