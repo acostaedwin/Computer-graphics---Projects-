@@ -10,7 +10,7 @@ class Point{
     var point = new THREE.Vector3(this.x,this.y,0);
     pointGeometry.vertices.push(point);
     var pointMaterial = new THREE.PointsMaterial( { color: new THREE.Color("rgb("+this.color+")") , size:this.size } );
-    console.log(pointMaterial.color.getHex());
+    //console.log(pointMaterial.color.getHex());
     var point = new THREE.Points( pointGeometry, pointMaterial);
     return point;
   }
@@ -44,6 +44,12 @@ class Pixel{
     this.x=x;
     this.y=y;
     this.color=color;
+  }
+  getX(){
+    return this.x;
+  }
+  getY(){
+    return this.y;
   }
   getColor(){
     return this.color;

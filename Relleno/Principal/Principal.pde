@@ -10,6 +10,9 @@ void setup() {
   linea1.print();
   linea2.print();
   linea3.print();
+  
+//  rect(0,1 0,10 10,0 10,10);
+
    
    //strokeWeight(2);
   //point(20,50);
