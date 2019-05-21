@@ -1,0 +1,144 @@
+<html><head>
+	<title></title>
+	<script src="js/thee.min.js"></script>
+</head>
+<body>
+    <script>
+    var scene = new THREE.Scene();
+    scene.background = new THREE.Color( 0xff0000 );
+    var camera = new THREE.PerspectiveCamera( 75, window.innerWidth/window.innerHeight,0.1,1000);
+    var renderer = new THREE.WebGLRenderer();
+    renderer.setSize( window.innerWidth, window.innerHeight );
+    document.body.appendChild( renderer.domElement );
+
+
+    var geometry = new THREE.BoxGeometry(0.5,0.5,0.5);    	
+
+	var material = new THREE.MeshBasicMaterial( { color: 0x00ff00} );
+	var cube = new THREE.Mesh( geometry, material );
+	scene.add(cube);
+	camera.position.z = 5;
+	var i=0;
+	var animate = function () {
+		requestAnimationFrame( animate );
+		cube.rotation.x += 0.1;
+		cube.rotation.y += 0.1;
+
+		cube.position.x = Math.cos(i * 0.02 ) * 2;
+  		cube.position.y = Math.sin(i * 0.02 ) * 2;
+		renderer.render(scene, camera);
+  
+		i++;
+	};
+	
+
+	animate();	    
+
+
+	
+	//AGREGAMOS UN OTRO CUBE
+	var geometry1 = new THREE.BoxGeometry(0.1,0.1,0.1);
+	var material1 = new THREE.MeshBasicMaterial( { color: 0x00ff00} );
+	var cube1 = new THREE.Mesh(geometry1,material1);
+	scene.add(cube1);
+	camera.position.z = 5;		
+
+    
+    //AGREGAMOS UN OTRO CUBE
+	var geometry2 = new THREE.BoxGeometry(0.5,0.5,0.5);
+	var material2 = new THREE.MeshBasicMaterial( { color: 0x00ff00} );
+	var cube2 = new THREE.Mesh(geometry2,material2);
+	scene.add(cube2);
+	camera.position.z = 5;		    
+
+
+
+
+	//AGREGAMOS UN OTRO CUBE
+	var geometry3 = new THREE.BoxGeometry(0.1,0.1,0.1);
+	var material3 = new THREE.MeshBasicMaterial( { color: 0x00ff00} );
+	var cube3 = new THREE.Mesh(geometry3,material3);
+	scene.add(cube3);
+	camera.position.z = 5;		
+
+    
+    //AGREGAMOS UN OTRO CUBE
+	var geometry4 = new THREE.BoxGeometry(0.5,0.5,0.5);
+	var material4 = new THREE.MeshBasicMaterial( { color: 0x00ff00} );
+	var cube4 = new THREE.Mesh(geometry4,material4);
+	scene.add(cube4);
+	camera.position.z = 5;
+
+
+	var moving_intX = 0.1;
+    var moving_intY = 0.1;
+    var moving_intX2 = 0.03;    
+    var moving_intY2 = 0.10;    
+    var moving_intX3 = 0.01;
+    var moving_intY3 = 0.01;
+    var moving_intX4 = 0.05;
+    var moving_intY4 = 0.5;
+    var j=0;
+    var renderCube = function (){
+      requestAnimationFrame( renderCube );     	  	
+	    if (cube1.position.x > 7 || cube1.position.x < -7) {
+	        moving_intX = -moving_intX;
+	        scene.background = new THREE.Color( '#'+(Math.random()*0xFFFFFF<<0).toString(16) );
+	    }
+	    if (cube1.position.y > 3.5 || cube1.position.y < -3.5) {
+	        moving_intY = -moving_intY;
+	        scene.background = new THREE.Color( '#'+(Math.random()*0xFFFFFF<<0).toString(16) );
+	    }     
+	    //-------------------------- 	    
+	    if (cube2.position.x > 7 || cube2.position.x < -7) {
+	        moving_intX2 = -moving_intX2;
+	        scene.background = new THREE.Color( '#'+(Math.random()*0xFFFFFF<<0).toString(16) );
+	    }
+	    if (cube2.position.y > 3.5 || cube2.position.y < -3.5) {
+	        moving_intY2 = -moving_intY2;
+	        scene.background = new THREE.Color( '#'+(Math.random()*0xFFFFFF<<0).toString(16) );
+	    }
+	    //-------------------------- 	    
+	    if (cube3.position.x > 7 || cube3.position.x < -7) {
+	        moving_intX3 = -moving_intX3;
+	        scene.background = new THREE.Color( '#'+(Math.random()*0xFFFFFF<<0).toString(16) );
+	    }
+	    if (cube3.position.y > 3.5 || cube3.position.y < -3.5) {
+	        moving_intY3 = -moving_intY3;
+	        scene.background = new THREE.Color( '#'+(Math.random()*0xFFFFFF<<0).toString(16) );
+	    }
+	    //-------------------------- 	    
+	    if (cube4.position.x > 7 || cube4.position.x < -7) {
+	        moving_intX4 = -moving_intX4;
+	        scene.background = new THREE.Color( '#'+(Math.random()*0xFFFFFF<<0).toString(16) );
+	    }
+	    if (cube4.position.y > 3.5 || cube4.position.y < -3.5) {
+	        moving_intY4 = -moving_intY4;
+	        scene.background = new THREE.Color( '#'+(Math.random()*0xFFFFFF<<0).toString(16) );
+	    }      
+	    cube1.position.x += moving_intX;
+	    cube1.position.y += moving_intY;
+	    cube2.position.x += moving_intX2;
+	    cube2.position.y += moving_intY2;
+	    cube3.position.x += moving_intX3;
+	    cube3.position.y += moving_intY3;
+	    cube4.position.x += moving_intX4;
+	    cube4.position.y += moving_intY4;
+
+
+	    ;
+
+      	renderer.render(scene, camera);      	
+
+    };
+    renderCube();
+
+
+
+    </script><canvas width="1005" height="576" style="width: 1005px; height: 576px;"></canvas>
+
+
+
+</body>
+</html>
+

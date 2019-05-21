@@ -1,0 +1,152 @@
+<html><head>
+	<title></title>
+	<!--script src="js/three.min.js"></script-->
+	<script src="js/three.js"></script>
+	
+	<script src="js/JsonGet.js"></script>
+	<script src="js/figuras.js"></script>
+
+
+	
+</head>
+<body onload="iniciar();">    
+	<div style="width:100%">		
+		<span id="spanX"></span>
+		<span style="margin-left: 30%;" id="spanY"></span>
+		<span style="margin-left: 30%;" id="spanZ"></span>
+	</div>	
+	<input style="width: 30%;" type="range" name="ejeX" id="ejeX" min="50" max="150" onmousemove="posicionarCamara();">
+	<input style="width: 30%;" type="range" name="ejeY" id="ejeY" min="50" max="150" onmousemove="posicionarCamara();">
+	<input style="width: 30%;" type="range" name="ejeZ" id="ejeZ" min="0" max="20000" onmousemove="posicionarCamara();">
+	<hr>
+    <canvas id="canvas" width="500" height="500" style="width: 500px; height: 500px;"></canvas>
+</body>
+<script>
+	function posicionarCamara(){
+		/*alert("x: "+camera.position.x);
+		alert("y: "+camera.position.y);
+		alert("z: "+camera.position.z);*/
+		document.getElementById("spanX").innerHTML="X: "+document.getElementById("ejeX").value;
+		document.getElementById("spanY").innerHTML="Y: "+document.getElementById("ejeY").value;
+		document.getElementById("spanZ").innerHTML="Z: "+document.getElementById("ejeZ").value;
+		
+		
+		camera.position.x=document.getElementById("ejeX").value;
+		camera.position.y=document.getElementById("ejeY").value;
+		camera.position.z=document.getElementById("ejeZ").value;
+			
+
+		console.log("ok");
+		
+			
+		renderer.render(scene, camera);
+			//animate(2);			
+
+	}
+
+	
+
+
+	var width=screen.width;
+	var height=screen.height-100;
+
+    var scene = new THREE.Scene();
+    //scene.background = new THREE.Color(0xff0000);    
+    camera = new THREE.PerspectiveCamera(40, width / height, 0.2, 25000);
+    var renderer = new THREE.WebGLRenderer( { canvas: canvas } );
+    renderer.setClearColor(0x140b33, 1);
+    //HREE.WebGLRenderer();
+  	renderer.setSize(width,height);   
+
+  	light = new THREE.PointLight(0xffffff, 1, 4000);
+	light.position.set(50, 0, 0);
+	light_two = new THREE.PointLight(0xffffff, 1, 4000);
+	light_two.position.set(-100, 800, 800);
+	lightAmbient = new THREE.AmbientLight(0x404040);
+	scene.add(light, light_two, lightAmbient);
+
+  	console.log(renderer.getSize().x);
+
+    
+	
+	//AGREGAMOS UN OTRO CUBE
+	var geometry = new THREE.BoxGeometry(1,1,1);
+	var material = new THREE.MeshBasicMaterial( { color: 0x00ff00} );
+	var cube = new THREE.Mesh(geometry,material);
+	scene.add(cube);
+	camera.position.z = 5;		
+
+/*
+	var moving_intX = 0.05;
+    var moving_intY = 0.05;
+    var moving_intZ = 1;
+    var renderCube = function (){
+      requestAnimationFrame(renderCube);
+
+	    if (cube.position.x > 100 || cube.position.x < -100) {
+	        moving_intX = -moving_intX;
+	        scene.background = new THREE.Color( '#'+(Math.random()*0xFFFFFF<<0).toString(16) );
+	    }
+	    if (cube.position.y > 75 || cube.position.y < -75) {
+	        moving_intY = -moving_intY;
+	        scene.background = new THREE.Color( '#'+(Math.random()*0xFFFFFF<<0).toString(16) );
+	    } 	       	    
+	    cube.position.x += moving_intX;
+	    cube.position.y += moving_intY;	    	    	    
+      	//renderer.render(scene, camera);      	
+
+    };
+    renderCube();
+*/
+
+	
+
+
+	var distance = 400;
+	createSpheres();
+	createDiamond();
+	camera.position.set(100, 100, 2000);
+
+	var moving_intX = 10;
+    var moving_intY = 10;
+
+	function render() {
+		requestAnimationFrame(render);
+		var timer = 0.00001 * Date.now();
+
+		for (var i = 0, l = diamondsGroup.children.length; i < l; i++) {
+			var object = diamondsGroup.children[i];
+			//object.position.y = 500 * Math.cos(timer + i);
+			object.rotation.y += Math.PI / 500;
+			/*
+			if (object.position.x > 7 || object.position.x < -7) {
+		        moving_intX = -moving_intX;		        
+		    }
+		    if (object.position.y > 3.5 || object.position.y < -3.5) {
+		        moving_intY = -moving_intY;		       
+		    }
+		    object.position.x += moving_intX;
+	    	object.position.y += moving_intY;
+	    	*/
+		}
+
+		for (var i = 0, l = spheres.children.length; i < l; i++) {
+			var object = spheres.children[i];
+			object.rotation.y += Math.PI / 60;
+			if (i < 20) {
+				object.rotation.y -= Math.PI / 40;
+			}
+		}
+		renderer.render(scene, camera);
+	};
+
+	function iniciar(){
+		//screen.width  width="1005" height="576" style="width: 1005px; height: 576px;"
+		render();
+	}
+
+    </script>	
+
+    <button type="button" onclick="render();">j</button>
+</html>
+

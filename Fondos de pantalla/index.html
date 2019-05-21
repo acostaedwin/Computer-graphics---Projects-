@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Acosta</title>
+</head>
+	<script src="acostaSuperJS/dontOpen.js"></script>	
+	<script type="text/javascript">
+		function utf8_to_b64( str ) {
+		  return window.btoa(unescape(encodeURIComponent( str )));
+		}
+
+		function b64_to_utf8( str ) {
+		  return decodeURIComponent(escape(window.atob( str )));
+		}
+
+
+	</script>
+<body>
+	<button type="button" onclick="window.location.reload();">Intentar de nuevo</button>
+	<div id="positivoParaNena">
+	</div>
+	<div id="eresDigo">		
+	</div>
+	<script type="text/javascript">
+		var nena="",digno="";		
+		for (var i=0; i<8;i++) 
+			nena=nena+"<MARQUEE><h1>ERES UNA NENA, Y PERDISTE.</h1></MARQUEE>";		
+		for (var i=0; i<5;i++)
+			digno=digno+"<MARQUEE><h1>FELICITACIONES ERES DIGO</h1></MARQUEE>";		
+
+		if(test()){
+			var text="Para el ejercicio 1: Agrega el siguiente codigo en la linea 12: document.body.appendChild( renderer.domElement );;<br>Para el ejercicio 2: aprende a escribir tres en la linea tres del codigo.";
+			console.log(utf8_to_b64(text));		
+
+			alert();
+			var codificado=utf8_to_b64(text);					
+			document.getElementById("eresDigo").innerHTML=digno+"<br><br>"+b64_to_utf8(codificado);											
+		}else{			
+			document.getElementById("positivoParaNena").innerHTML=nena;	
+		}
+
+		function test(){
+			try{
+				if(confirm("Voy a hacer esto, para ver quien es digo de presentar mi codigo. Aceptas? o eres una nena?")){
+					alert("OK.... Empecemos: ")
+					var n1 = prompt("Quien desarrollo JavaScript?");
+					if(n1=="Brendan Eich"){
+						alert("OK, vas bien.")
+
+						var key="E"+(((Math.random()*10000)+"").split(".")[0])+"D"+(((Math.random()*10000)+"").split(".")[0])+"W"+(((Math.random()*10000)+"").split(".")[0])+"I"+(((Math.random()*10000)+"").split(".")[0])+"N";
+
+						console.log("Muy bien ya sabes ver la consola de JavaScript :). Aqui esta la clave: "+key);
+						var n2 = prompt("Escribe la clave aleatoria que acabe de generar en LA CONSOLA DE JavaScript DEL NACEGADOR.");						
+						if(n2==key){
+							alert("PERFECT...");
+							var n3 = prompt("Ultima pregunta. ¿tendras que presentarme a tu amiga mas linda que tengas que no sea parte de tu ganado. Escribe YES o NO.");
+							if(n3=="YES"){
+								alert("OK, es una promesa. GANASTE");									
+								return true;
+							}						
+						}
+					}						
+				}
+			}catch(e){
+				alert("MALLLLLLLLLLLLLLL "+e.message)
+			}
+			
+			return false;				
+		}
+
+
+
+
+	</script>
+</body>
+</html>
