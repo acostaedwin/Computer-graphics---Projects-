@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Protector de Pantalla</title>
+<style>
+body { margin: 0px; }
+canvas { width: 100%; height: 100% }
+</style>
+</head>
+<body>
+<script src="js/three.js"></script>
+<script>
+
+var scene = new THREE.Scene();
+var camera = new THREE.PerspectiveCamera( 75, window.innerWidth/window.innerHeight, 0.1, 1000 );
+
+var renderer = new THREE.WebGLRenderer();
+renderer.setSize( window.innerWidth, window.innerHeight );
+document.body.appendChild( renderer.domElement );
+
+var geometry = new THREE.CircleGeometry( 5, 32 );
+var material = new THREE.MeshBasicMaterial( { color: 0x0000FF });
+var circle = new THREE.Mesh( geometry, material );
+scene.add( circle );
+
+
+var geometry = new THREE.BoxGeometry( 1, 1, 1 );
+var material = new THREE.MeshBasicMaterial( { color: 0x008000} );
+var cube = new THREE.Mesh( geometry, material );
+scene.add( cube );
+
+
+var geometry = new THREE.CircleGeometry( 7, 30 );
+var material = new THREE.MeshBasicMaterial( { color: 0x00FFFF} );
+var circle_1 = new THREE.Mesh( geometry, material );
+scene.add( circle_1 );
+
+var geometry = new THREE.BoxGeometry( 1, 1, 1 );
+var material = new THREE.MeshBasicMaterial( { color: 0x008000} );
+var cube_1 = new THREE.Mesh( geometry, material );
+scene.add( cube_1 );
+
+var geometry = new THREE.CircleGeometry( 7, 30 );
+var material = new THREE.MeshBasicMaterial( { color: 0x00FFFF} );
+var circle_2 = new THREE.Mesh( geometry, material );
+scene.add( circle_2 );
+
+var geometry = new THREE.BoxGeometry( 1, 1, 1 );
+var material = new THREE.MeshBasicMaterial( { color: 0x008000} );
+var cube_2 = new THREE.Mesh( geometry, material );
+scene.add( cube_2 );
+
+var geometry = new THREE.CircleGeometry( 7, 30 );
+var material = new THREE.MeshBasicMaterial( { color: 0x00FFFF} );
+var circle_3 = new THREE.Mesh( geometry, material );
+scene.add( circle_3 );
+
+var geometry = new THREE.BoxGeometry( 1, 1, 1 );
+var material = new THREE.MeshBasicMaterial( { color: 0x008000} );
+var cube_3 = new THREE.Mesh( geometry, material );
+scene.add( cube_3 );
+
+var geometry = new THREE.CircleGeometry( 7, 30 );
+var material = new THREE.MeshBasicMaterial( { color: 0x00FFFF} );
+var circle_4 = new THREE.Mesh( geometry, material );
+scene.add( circle_4 );
+
+var geometry = new THREE.BoxGeometry( 1, 1, 1 );
+var material = new THREE.MeshBasicMaterial( { color: 0x008000} );
+var cube_4 = new THREE.Mesh( geometry, material );
+scene.add( cube_4 );
+
+var geometry = new THREE.CircleGeometry( 7, 30 );
+var material = new THREE.MeshBasicMaterial( { color: 0x00FFFF} );
+var circle_5 = new THREE.Mesh( geometry, material );
+scene.add( circle_5 );
+
+var geometry = new THREE.BoxGeometry( 1, 1, 1 );
+var material = new THREE.MeshBasicMaterial( { color: 0x008000} );
+var cube_5 = new THREE.Mesh( geometry, material );
+scene.add( cube_5 );
+
+var geometry = new THREE.CircleGeometry( 7, 30 );
+var material = new THREE.MeshBasicMaterial( { color: 0x00FFFF });
+var circle_6 = new THREE.Mesh( geometry, material );
+scene.add( circle_6 );
+
+var geometry = new THREE.BoxGeometry( 1, 1, 1 );
+var material = new THREE.MeshBasicMaterial( { color: 0x008000} );
+var cube_6 = new THREE.Mesh( geometry, material );
+scene.add( cube_6 );
+
+var geometry = new THREE.CircleGeometry( 7, 30 );
+var material = new THREE.MeshBasicMaterial( { color: 0x00FFFF} );
+var circle_7 = new THREE.Mesh( geometry, material );
+scene.add( circle_7 );
+
+var geometry = new THREE.BoxGeometry( 1, 1, 1 );
+var material = new THREE.MeshBasicMaterial( { color: 0x008000} );
+var cube_7 = new THREE.Mesh( geometry, material );
+scene.add( cube_7 );
+
+var geometry = new THREE.CircleGeometry( 7, 30 );
+var material = new THREE.MeshBasicMaterial( { color: 0x00FFFF });
+var circle_8 = new THREE.Mesh( geometry, material );
+scene.add( circle_8 );
+
+var geometry = new THREE.BoxGeometry( 1, 1, 1 );
+var material = new THREE.MeshBasicMaterial( { color: 0x008000} );
+var cube_8 = new THREE.Mesh( geometry, material );
+scene.add( cube_8 );
+
+camera.position.z = 10;
+
+
+cube.position.x+= -2.0;
+cube.position.y+= -2.0;
+circle.position.x+=2.0;
+circle.position.y+=2.0;
+
+cube_1.position.x+= 2.0;
+cube_1.position.y+= 2.0;
+circle_1.position.x+=-2.0;
+circle_1.position.y+=-2.0;
+
+cube_2.position.x+= -2.0;
+cube_2.position.y+= 2.0;
+circle_2.position.x+=-2.0;
+circle_2.position.y+=2.0;
+
+
+cube_3.position.x+= 2.0;
+cube_3.position.y+= -2.0;
+circle_3.position.x+=2.0;
+circle_3.position.y+=-2.0;
+
+cube_4.position.x+= 5.0;
+cube_4.position.y+= 0.0;
+circle_4.position.x+=5.0;
+circle_4.position.y+=0.0;
+
+cube_5.position.x+= -5.0;
+cube_5.position.y+= -1.0;
+circle_5.position.x+=-5.0;
+circle_5.position.y+=-1.0;
+
+cube_6.position.x+= -6.0;
+cube_6.position.y+= 2.0;
+circle_6.position.x+=4.0;
+circle_6.position.y+=-1.0;
+
+cube_7.position.x+= -3.5;
+cube_7.position.y+= 4.0;
+circle_7.position.x+=6.0;
+circle_7.position.y+=-4.5;
+
+cube_8.position.x+= -7.0;
+cube_8.position.y+= -4.0;
+circle_8.position.x+=-3.5;
+circle_8.position.y+=-2.5;
+
+
+var animate = function () {
+requestAnimationFrame( animate );
+
+	cube.rotation.y += 0.01;
+	cube.rotation.x += 0.01;
+	circle.rotation.x +=0.01;
+	circle.rotation.y +=0.01;
+
+	cube_1.rotation.y += 0.01;
+	cube_1.rotation.x += 0.01;
+	circle_1.rotation.x +=0.01;
+	circle_1.rotation.y +=0.01;
+
+	cube_2.rotation.y += 0.01;
+	cube_2.rotation.x += 0.01;
+	circle_2.rotation.x +=0.01;
+	circle_2.rotation.y +=0.01;
+
+	cube_3.rotation.y += 0.01;
+	cube_3.rotation.x += 0.01;
+	circle_3.rotation.x +=0.01;
+	circle_3.rotation.y +=0.01;
+
+	cube_4.rotation.y += 0.01;
+	cube_4.rotation.x += 0.01;
+	circle_4.rotation.x +=0.01;
+	circle_4.rotation.y +=0.01;
+
+	cube_5.rotation.y += 0.01;
+	cube_5.rotation.x += 0.01;
+	circle_5.rotation.x +=0.01;
+	circle_5.rotation.y +=0.01;
+
+	cube_6.rotation.y += 0.01;
+	cube_6.rotation.x += 0.01;
+	circle_6.rotation.x +=0.01;
+	circle_6.rotation.y +=0.01;
+
+	cube_7.rotation.y += 0.01;
+	cube_7.rotation.x += 0.01;
+	circle_7.rotation.x +=0.01;
+	circle_7.rotation.y +=0.01;
+
+	cube_8.rotation.y += 0.01;
+	cube_8.rotation.x += 0.01;
+	circle_8.rotation.x +=0.01;
+	circle_8.rotation.y +=0.01;
+
+
+
+
+
+renderer.render( scene, camera );
+};
+
+animate();
+</script>
+</body>
+</html>

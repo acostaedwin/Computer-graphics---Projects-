@@ -1,6 +1,9 @@
 class Circle {
 
-  Circle(int r,int xc,int yc,int pk,int x,int y){
+  Circle(int r,int xc,int yc){
+    int pk=0;
+    int x=0;
+    int y=0;
     pk = 3 - 2*r;
     y = r;
     print(x, y, xc, yc);
