@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Proyecto de relleno</title>
+    <meta name="author" content="Edwin Acosta">
+    <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  </head>
+
+  <body>    
+    <select id="forma">
+    <option selected hidden value="">Accion</option>    
+    <optgroup label="Objeto a dibujar">
+      <option value="line">Linea</option>        
+        <option value="circle">Circulo</option>     
+    </optgroup>
+      <optgroup label="Rellenar">
+      <option value="fill">Rellenar</option>        
+    </optgroup>
+  </select>
+  <input type="color" id="colorMine" value="#ff0000">
+  <br>
+  <div id="estadoPuntos">
+    Punto 1: (,)
+  </div>
+  <br><br>
+  <canvas id="glcanvas" width="1280" height="720" style="outline: black 3px solid;">
+    Tu navegador parece no soportar el elemento HTML5 <code>&lt;canvas&gt;</code>.    
+  </canvas>
+
+    <!-- Shaders -->
+    <script name="shader" data-src="vertex.glsl" data-type="vertex" data-version="v1"></script>
+    <script name="shader" data-src="fragment.glsl" data-type="fragment" data-version="v1"></script>
+
+    <!-- Library: Signals processing used for dispatching methods -->
+    <script type="text/javascript" src="js/signals.js"></script>
+
+    <!-- Library: our common libraries -->
+    <script type="text/javascript" src="js/glUtils.js"></script>
+    <script type="text/javascript" src="js/uiUtils.js"></script>
+
+    <!-- This is the bulk of the actual WebGL stuff -->
+    <script type="text/javascript" src="js/index.js"></script>
+
+    <script type="text/javascript" src="js/objects.js"></script>
+    <script type="text/javascript" src="js/fill.js"></script>
+
+  <script type="text/javascript">
+      var pointsUI=[];      
+      function creandoObjetos(event){        
+        
+        var hexColor=document.getElementById("colorMine").value;
+
+        var originalPoint={x:event.clientX,y:event.clientY};        
+        var myPoint = uiUtils.pixelInputToCanvasCoord(originalPoint);
+        var pointGL = uiUtils.pixelInputToGLCoord(originalPoint);
+        pointGL.c = hexToRGB(hexColor,1.0);
+
+        //con esto volvemos al original point
+        //console.log("originalPoint: "+JSON.stringify(uiUtils.canvasCoordToPixelInput(myPoint)));
+        
+
+        var forma=document.getElementById("forma");     
+        console.log("points.length: "+pointsUI.length);   
+        if(forma.value==""){
+          alert("Seleccione una accion.");
+          forma.focus();
+        }else if(forma.value=="fill"){
+          var f=new Fill();
+          var ps=f.start(myPoint.x,myPoint.y,hexToRGB(hexColor,1.0),hexToRGB(hexColor,1.0));
+
+          return ps;
+
+        }else {
+          pointsUI.push(myPoint);
+    
+          HTMLEstadoPuntos();
+          if(forma.value=="line"){        
+            if(pointsUI.length==2){
+              var linea=new LineDda(pointsUI[0].x,pointsUI[0].y,
+                pointsUI[1].x,pointsUI[1].y,hexToRGB(hexColor,1.0));
+              pointsUI=[];
+              var pointsLine=linea.getPoints();                        
+              return pointsLine;
+            }
+          }else if(forma.value=="circle"){
+            if(pointsUI.length==2){
+              var radio=distanciaEntreDosPuntos(pointsUI[0],pointsUI[1]);
+              var c=new Circle(pointsUI[0].x,pointsUI[0].y,radio,hexToRGB(hexColor,1.0));
+              pointsUI=[];
+              var pointsC=c.getPoints();                          
+              return pointsC;
+            }
+          }
+        }
+
+        return null;
+      }
+
+      function HTMLEstadoPuntos(){    
+        var html="";
+        for (var i=0; i<pointsUI.length;i++){
+          html+="Punto "+(i+1)+": <span>("+pointsUI[i].x+","+pointsUI[i].y+")</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";    
+        }
+        document.getElementById("estadoPuntos").innerHTML=html;
+      }
+  </script>
+
+  </body>
+</html>

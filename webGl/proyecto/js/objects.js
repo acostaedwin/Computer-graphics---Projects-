@@ -4,10 +4,10 @@ class LineDda{
         this.y1 = _y1;
         this.x2 = _x2;
         this.y2 = _y2;        
-        this.color=_color;
-        this.print();
+        this.color=_color;        
     }
-    print() {
+    getPoints() {
+        var pointsResponse=[];
         var ax, ay, x, y, variacion;
 
         //si la variacion en x es mayor o igual que la variacion en y
@@ -26,11 +26,13 @@ class LineDda{
         var i = 0;        
         while (i <= variacion){
             //console.log("x:"+x+" - y: "+y);            
-            setPixel(parseInt(x),parseInt(y),this.color);  
+            //setPixel(parseInt(x),parseInt(y),this.color);  
+            pointsResponse.push({x:parseInt(x),y:parseInt(y),c:this.color});
             x = x + ax;
             y = y + ay;
             i++;
         }
+        return pointsResponse;
     }
 }
 
@@ -39,27 +41,27 @@ class Circle{
         this.xCentro=xC;
         this.yCentro=yC;
         this.radio=r;
-        this.color=_color;
-        this.print();
+        this.color=_color;        
     }
-    print(){
-        console.log("erda");
-        drawOneBlackPixel(this.xCentro,this.yCentro); 
-        for(var angulo=0;angulo<=360;angulo++){      
-            setPixel(this.xCentro+this.radio*Math.cos(this.degrees_to_radians(-angulo)),
-                this.yCentro+this.radio*Math.sin(this.degrees_to_radians(-angulo)),this.color); 
+    getPoints(){        
+        var pointsResponse=[];        
+        for(var angulo=0;angulo<=360;angulo++){                  
+            pointsResponse.push({x:parseInt(this.xCentro+this.radio*Math.cos(this.degrees_to_radians(-angulo))),
+                y:parseInt(this.yCentro+this.radio*Math.sin(this.degrees_to_radians(-angulo))),c:this.color});            
         } 
+        return pointsResponse;
     }
     degrees_to_radians(degrees){
         var pi = Math.PI;
         return degrees * (pi/180);
     }   
 }
-
+/*
 class Color{
-  constructor(_r,_g,_b){
+  constructor(_r,_g,_b,_a){
     this.r=_r;
     this.g=_g;
+    this.b=_b;
     this.b=_b;
   }  
   equals(colorCompare){
@@ -69,7 +71,7 @@ class Color{
     return false;
   }
 }
-
+*/
 /*
 class Circle {
   constructor(int r,xc,yc){

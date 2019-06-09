@@ -8,17 +8,22 @@
 </head>
 <body onload="">
 	<select id="forma">
-		<option selected hidden value="">Objeto a dibujar</option>
-	    <option value="line">Linea</option>
-	    <option value="box">Cuadrado</option>
-	    <option value="circle">Circulo</option>	    
+		<option selected hidden value="">Accion</option>		
+		<optgroup label="Objeto a dibujar">
+			<option value="line">Linea</option>
+		    <option value="box">Cuadrado</option>
+		    <option value="circle">Circulo</option>	    
+		</optgroup>
+	    <optgroup label="Rellenar">
+			<option value="fill">Rellenar</option>		    
+		</optgroup>
 	</select>
 	<br>
 	<div id="estadoPuntos">
 		
 	</div>
 	<br><br>
-	<canvas id="glcanvas" width="900" height="600">
+	<canvas id="glcanvas" width="10" height="10" style="outline: black 3px solid;">
 		Tu navegador parece no soportar el elemento HTML5 <code>&lt;canvas&gt;</code>.  	
 	</canvas>
 
@@ -29,28 +34,36 @@
 	canvas.addEventListener('mousedown',presiono);
 	
 
-	gl.clearColor(0.9,0.9,0.9,1.0);
-  	gl.clear(gl.COLOR_BUFFER_BIT);	
+	//gl.clearColor(0.9,0.9,0.9,1.0);
+  	//gl.clear(gl.COLOR_BUFFER_BIT);	
+
+
 
 	
-	
-
 	var points=[];
 	// UI Events
 	function presiono(event){     
+		iniciarFondo(event);
 		var point = uiUtils.pixelInputToCanvasCoord(event, canvas);	  
 	  	var forma=document.getElementById("forma");	  	
 		console.log("points.length: "+points.length);   
 
 	  	if(forma.value==""){
-		  	alert("Seleccione una forma.");
+		  	alert("Seleccione una accion.");
 	  		forma.focus();
+
+	  	}else if(forma.value=="fill"){
+			
+			console.log(point);
+			console.log(getPixel(point.x,point.y));
+			
+
 	  	}else {
 	  		points.push(point);
 			HTMLEstadoPuntos();
 		  	if(forma.value=="line"){				
 				if(points.length==2){
-					new LineDda(points[0].x,points[0].y,points[1].x,points[1].y);
+					new LineDda(points[0].x,points[0].y,points[1].x,points[1].y,new Color(0,0,0));
 					points=[];
 				}
 			}else if(forma.value=="circle"){
@@ -66,6 +79,17 @@
 			html+="Punto "+(i+1)+": <span>("+points[i].x+","+points[i].y+")</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";		
 		}
 		document.getElementById("estadoPuntos").innerHTML=html;
+	}
+
+
+
+	function iniciarFondo(event){
+  		for(var i=0; i<matrix.length; i++){
+		    for(var j=0; j<matrix[i].length; j++){
+		    	//console.log(i+","+j);
+      			setPixel(i,j,new Color(255,0,0),event);
+    		}
+		}
 	}
   
 		</script>
