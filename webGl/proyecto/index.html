@@ -9,15 +9,15 @@
 
   <body>    
     <select id="forma">
-    <option selected hidden value="">Accion</option>    
-    <optgroup label="Objeto a dibujar">
-      <option value="line">Linea</option>        
-        <option value="circle">Circulo</option>     
-    </optgroup>
-      <optgroup label="Rellenar">
-      <option value="fill">Rellenar</option>        
-    </optgroup>
-  </select>
+    	<option selected hidden value="">Accion</option>    
+    	<optgroup label="Objeto a dibujar">
+      		<option value="line">Linea</option>        
+        	<option value="circle">Circulo</option>     
+    	</optgroup>
+      	<optgroup label="Rellenar">
+      		<option value="fill">Rellenar</option>        
+    	</optgroup>
+  	</select>
   <input type="color" id="colorMine" value="#ff0000">
   <br>
   <div id="estadoPuntos">
@@ -68,6 +68,8 @@
         }else if(forma.value=="fill"){
           var f=new Fill();
           var ps=f.start(myPoint.x,myPoint.y,hexToRGB(hexColor,1.0),hexToRGB(hexColor,1.0));
+
+          document.getElementById("forma").value="line";
 
           return ps;
 
