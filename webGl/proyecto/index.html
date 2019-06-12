@@ -5,9 +5,17 @@
     <meta name="author" content="Edwin Acosta">
     <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+<!-- Remember to include jQuery :) -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.0.0/jquery.min.js"></script>
+
+<!-- jQuery Modal -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-modal/0.9.1/jquery.modal.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-modal/0.9.1/jquery.modal.min.css" />
+
   </head>
 
-  <body>    
+  <body onload="document.getElementById('triggerModal').click();">    
     <select id="forma">
     	<option selected hidden value="">Accion</option>    
     	<optgroup label="Objeto a dibujar">
@@ -108,5 +116,24 @@
       }
   </script>
 
+<!-- Modal HTML embedded directly into document -->
+<div id="ex1" class="modal">
+  <p>Presentado por: Edwin Acosta, Santiago Gomez y Brayan Contreras.</p>
+  <hr>
+  <h3>Consideraciones</h3>
+  <p>1: Si le aparece el siguiente error en la consola de js <b>Access to XMLHttpRequest at 'vertex.glsl' from origin 'null' has been blocked by CORS policy</b> por favor tenga el cuenta que el proyecto deber estar sobre un servidor web. Dirijase a este enlace: <a target="_blank" href="https://u6000324.github.io/Computer-graphics---Projects-/webGl/proyecto/">Proyecto en GitHub Pages</a> </p>
+  <p>2: Puede crear cualquier tipo de poligonos con base en las lineas, para crear una linea haga click con el mouse en dos puntos del canvas.</p>
+  <p>3: Para crear una circulo haga con el mouse click en dos puntos, uno para el centro del circulo y el otro para el tamaño del radio.</p>
+  <p>4: Para hacer el relleno haga click dentro de una figura para que el algoritmo de relleno empiece desde ese pixel.</p>
+  <p>5: El color del relleno debe ser el mismo del borde.</p>
+  <p>5: Si hace figuras muy grandes o intenta rellenar una figura que no esta cerrada, el algoritmo se sobrecargara y tal vez se cierre el navegador.</p>
+  <p>5: Use Chrome</p>
+  <a href="#" rel="modal:close">Close</a>
+</div>
+
+<!-- Link to open the modal -->
+<a href="#ex1" id="triggerModal" rel="modal:open" style="display: none;"></a>
   </body>
 </html>
+
+Access to XMLHttpRequest at 'vertex.glsl' from origin 'null' has been blocked by CORS policy: Cross origin requests are only supported for protocol schemes: http, data, chrome, chrome-extension, https
