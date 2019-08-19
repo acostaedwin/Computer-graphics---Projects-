@@ -1,0 +1,130 @@
+ <!DOCTYPE html>
+<html>
+  <head>
+    <title>Ej: Cilindro</title>
+    <style>
+      html, body { margin: 0; padding: 0; overflow: hidden; }
+    </style>
+  </head>
+  <body>
+    <script src="js/three.min.js"></script>
+    <script>
+		var scene, aspect, camera, renderer;
+		var startTime = Date.now();
+		
+		init();
+		animate();
+	
+		function init(){
+			scene = new THREE.Scene();
+			aspect = window.innerWidth / window.innerHeight;
+			camera = new THREE.PerspectiveCamera( 45, aspect, 0.1, 1000);
+			renderer = new THREE.WebGLRenderer();
+			renderer.setSize( window.innerWidth, window.innerHeight );
+
+
+
+			document.body.appendChild( renderer.domElement );
+				  
+			var size = 15;
+			var arrowSize = 1;
+			var divisions = size;
+			var origin = new THREE.Vector3( 0, 0, 0 );
+			var x = new THREE.Vector3( 1, 0, 0 );
+			var y = new THREE.Vector3( 0, 1, 0 );
+		  	var z = new THREE.Vector3( 0, 0, 1 );			
+		  	var color2 = new THREE.Color( 0x333333 );
+		  	var colorR = new THREE.Color( 0xAA3333 );
+		  	var colorG = new THREE.Color( 0x33AA33 );
+		  	var colorB = new THREE.Color( 0x333366 );
+		  
+		  	//CREAR LAS GRILLAS PARA EL ESCENARIO
+		  	var axesHelper = new THREE.AxesHelper( size );		  	
+		  	var gridHelperXZ = new THREE.GridHelper( size, divisions, color2, color2 );		  	                      
+            gridHelperXZ.rotateOnWorldAxis ( y, THREE.Math.degToRad(90) );            
+            
+            //CREAR LAS FLECHAS QUE INDICAN LOS EJES DE COORDENADAS 3D
+            var arrowX = new THREE.ArrowHelper( x, origin, arrowSize, colorR );
+            var arrowY = new THREE.ArrowHelper( y, origin, arrowSize, colorG );
+            var arrowZ = new THREE.ArrowHelper( z, origin, arrowSize, colorB );
+			
+			
+			for (var i = -4; i<=4; i++) {
+				//console.log(i);
+				addCube(4,1,i);
+				addCube(4,3,i);
+				if(i%2==0){
+					addCube(4,2,i);
+				}	
+				addCube(3,1,i);
+				addCube(3,3,i);
+				if(i%2==0){
+					addCube(3,2,i);
+				}			
+			}
+
+			for (var j = -4; j<=4; j++) {
+				for (var i = 1; i<=2; i++) {
+					if(j!=0){
+						addCube(-4,i,j);
+						addCube(-3,i,j);
+
+						addCube(1,i,j);
+						addCube(0,i,j);
+					}					
+				}
+			}		
+			
+							
+
+		  
+		  	//AGREGAR A LA ESCENA		  	
+            scene.add( gridHelperXZ );
+		  	scene.add( arrowX );	
+		  	scene.add( arrowY );	
+		  	scene.add( arrowZ );	
+
+		  	console.log("gridHelperXZ: "+JSON.stringify(gridHelperXZ.position));
+			//scene.add( cilindro );
+			
+			camera.position.x = 5;
+			camera.position.y = 10;	 
+		  	camera.position.z = 10;
+			
+		  	//camera.lookAt( origin );
+
+
+			}
+    
+	    function animate() {
+	        render();
+	        requestAnimationFrame( animate );
+	    }
+
+	    function addCube(x,y,z){
+	    	var texture = new THREE.TextureLoader().load('https://u6000324.github.io/Computer-graphics---Projects-/recursos/imagenes/building.jpg');
+			var geometry = new THREE.BoxBufferGeometry(1,1,1);
+			var material = new THREE.MeshBasicMaterial( { map: texture } );
+			mesh = new THREE.Mesh( geometry, material );
+			console.log("cubo: "+JSON.stringify(mesh.position));
+			mesh.position.x=x;
+			mesh.position.y=y;
+			mesh.position.z=z;
+			scene.add( mesh );
+	    }
+	    
+	    function render(){
+	    	
+	        var dtime = Date.now()-startTime;
+	        camera.position.x = 10*Math.cos(dtime/1000);
+	        camera.position.z = 10*Math.sin(dtime/1000);
+
+	        camera.position.y = 10*Math.sin(dtime/10000);
+	                
+	        camera.lookAt( 0, 0, 0 );
+
+	        renderer.render( scene, camera );
+	    }
+    </script>
+  </body>
+</html>
