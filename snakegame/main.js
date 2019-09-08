@@ -1,5 +1,5 @@
 !(function(win, doc) {
-  if (!Detector.webgl) Detector.addGetWebGLMessage();
+  //if (!Detector.webgl) Detector.addGetWebGLMessage();
   var scene, camera, renderer, cube;
   var gridSize = 750, unitSize = 50;
   var pos;
