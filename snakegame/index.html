@@ -1,0 +1,42 @@
+<!doctype html>
+<html>
+  <head>
+    <link rel="stylesheet" href="main.css" />
+  </head>
+  <body>
+    <div id="pause" class="paused hidden">Paused</div>
+    <div class="infobox">
+      <div class="panels">
+        <div class="hd">game controls</div><br/>
+        <code>A</code><span> pan camera left</span><br/>
+        <code>D</code><span> pan camera right</span><br/>
+        <!--<code>W</code><span> - move up </span><br/>
+        <code>S</code><span> - move down </span><br/>-->
+        <code>&uarr;</code><span> move backwards </span><br/>
+        <code>&darr;</code><span> move forward </span></br>
+        <code>&rarr;</code><span> move right </span><br/>
+        <code>&larr;</code><span> move left </span><br/>
+      <code>spacebar</code><span> pause (use <code>arrows keys</code> to resume) </span><br/>
+      </div>
+      <div class="panels">
+        <div class="hd">game options</div><br/>
+        <label>speed: &nbsp;</label>
+        <select id="speedoptions">
+          <option value="15">Slow</option>
+          <option value="10">Medium</option>
+          <option value="5">Fast</option>
+        </select><br/><br/>
+        <label>obstacles: &nbsp;</label>
+        <input type="checkbox"></input>
+      </div>
+      <div class="panels">
+        <div class="hd">game score</div>
+        <div id="gamescore" class="score">0</div>
+      </div>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r70/three.min.js"></script>
+    <script src="https://threejs.org/examples/js/Detector.js"></script>
+    <script src="snake.js"></script>
+    <script src="main.js"></script>
+  </body>
+</html>
