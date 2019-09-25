@@ -1,49 +1,30 @@
 <!DOCTYPE html>
-<html>
-    <head>
-        <title>Edwin Acosta y Santiago Gomez</title>
-        <style>
-            html, body { margin: 0; padding: 0; overflow: hidden; }
-            #info {
-                position: absolute;
-                padding: 10px;
-                width: 100%;
-                text-align: center;
-                color: #FFFFFF;
-            }
-        </style>
-    </head>
-    <body>
-        <div id="info">RELACIÓN PARENT-CHILD<br/>
-            Usar flecha arriba y abajo para trasladar.<br/>
-            Usar flechas laterales para rotar.<br/>
-        </div>
-    <script src="js/three.min.js"></script>
-    <script>
-		var scene, aspect, camera, renderer;
-		var geometry1, geometry2;
-		var hips, torso, head;
-		var rightFoot, rightLeg, rightArm, rightHand;
-		var leftFoot, leftLeg, leftArm, leftHand;
-		var startTime = Date.now();
-				
-		var upArrow = false;
-		var downArrow = false;
-		var leftArrow = false;
-		var rightArrow = false;
-		var scaleUp = false;
-		var scaleDown = false;
-		var xAxis = true;
-		var yAxis = false;
-		var zAxis = false;
-		
-		var thetaSum=0;
-		var positivo=false;
-		
+<html lang="en">
+	<head>
+		<title>Edwin Acosta</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		<script type="text/javascript" src="js/three.min.js"></script>
+	</head>
+	<body>
 
+		<div id="container"></div>
 
+		<script type="module">
 
-		var views = [
+			import * as THREE from './js/three.module.js';
+
+			import Stats from './js/stats.module.js';
+
+			var container, stats;
+
+			var views, scene, renderer;
+
+			var mouseX = 0, mouseY = 0;
+
+			var windowWidth, windowHeight;
+
+			var views = [
 				{
 					left: 0,
 					bottom: 0,
@@ -52,16 +33,14 @@
 					background: new THREE.Color( 0.5, 0.5, 0.7 ),
 					eye: [ 0, 300, 1800 ],
 					up: [ 0, 1, 0 ],
-					fov: 30
-					/*
-					,updateCamera: function ( camera, scene,mouseX){
+					fov: 30,
+					updateCamera: function ( camera, scene, mouseX ) {
 
 					  camera.position.x += mouseX * 0.05;
 					  camera.position.x = Math.max( Math.min( camera.position.x, 2000 ), - 2000 );
 					  camera.lookAt( scene.position );
 
 					}
-					*/
 				},
 				{
 					left: 0.5,
@@ -71,16 +50,14 @@
 					background: new THREE.Color( 0.7, 0.5, 0.5 ),
 					eye: [ 0, 1800, 0 ],
 					up: [ 0, 0, 1 ],
-					fov: 45
-					/*
-					,updateCamera: function ( camera, scene, mouseX ) {
+					fov: 45,
+					updateCamera: function ( camera, scene, mouseX ) {
 
 					  camera.position.x -= mouseX * 0.05;
 					  camera.position.x = Math.max( Math.min( camera.position.x, 2000 ), - 2000 );
 					  camera.lookAt( camera.position.clone().setY( 0 ) );
 
 					}
-					*/
 				},
 				{
 					left: 0.5,
@@ -90,114 +67,156 @@
 					background: new THREE.Color( 0.5, 0.7, 0.7 ),
 					eye: [ 1400, 800, 1400 ],
 					up: [ 0, 1, 0 ],
-					fov: 60
-					/*
-					,updateCamera: function ( camera, scene, mouseX ) {
+					fov: 60,
+					updateCamera: function ( camera, scene, mouseX ) {
 
 					  camera.position.y -= mouseX * 0.05;
 					  camera.position.y = Math.max( Math.min( camera.position.y, 1600 ), - 1600 );
 					  camera.lookAt( scene.position );
 
 					}
-					*/
 				}
 			];
 
+			init();
+			animate();
 
+			function init() {
 
+				container = document.getElementById( 'container' );
 
+				for ( var ii = 0; ii < views.length; ++ ii ) {
+					var view = views[ ii ];
+					var camera = new THREE.PerspectiveCamera( view.fov, window.innerWidth / window.innerHeight, 1, 10000 );
+					camera.position.fromArray( view.eye );
+					camera.up.fromArray( view.up );
+					view.camera = camera;
 
-
-
-		init();
-		animate();
-	
-		function init(){
-			for ( var ii = 0; ii < views.length; ++ ii ) {
-
-				var view = views[ ii ];
-				var camera = new THREE.PerspectiveCamera( view.fov, window.innerWidth / window.innerHeight, 1, 10000 );
-				camera.position.fromArray( view.eye );
-				camera.up.fromArray( view.up );
-				view.camera = camera;
-
-			}
-
-			scene = new THREE.Scene();
-			aspect = window.innerWidth / window.innerHeight;
-			camera = new THREE.PerspectiveCamera( 45, aspect, 0.1, 1000);
-			renderer = new THREE.WebGLRenderer();
-			renderer.setSize( window.innerWidth, window.innerHeight );
-			document.body.appendChild( renderer.domElement );
-				  			
-			//EVENTOS DE TECLADO
-			
-			var onKeyDown = function ( event ) {
-				switch ( event.keyCode ) {
-					case 38: // TRASLADAR ADELANTE
-						upArrow = true;
-						break;
-					case 40: // TRASLADAR ATRÁS
-						downArrow = true;
-						break;
-					case 83: // ESCALA AGRANDAR
-						scaleUp = true;
-						break;
-					case 87: // ESCALA DISMINUIR
-						scaleDown = true;
-						break;
-					case 37: // ROTAR CW
-						leftArrow = true;
-						break;
-					case 39: // ROTAR CCW
-						rightArrow = true;
-						break;
-					case 88: // SELECCIONAR EJE X DE ROTACION
-						yAxis = false;
-						zAxis = false;
-						xAxis = true;
-						break;
-					case 89: // SELECCIONAR EJE Y DE ROTACION
-						xAxis = false;
-						zAxis = false;
-						yAxis = true;
-						break;
-					case 90: // SELECCIONAR EJE Z DE 
-						xAxis = false;
-						yAxis = false;
-						zAxis = true;
-						break;
 				}
-			};	  
-		  			
-			var onKeyUp = function ( event ) {
-				switch ( event.keyCode ) {
-					case 38: // TRASLADAR
-						upArrow = false;
-						break;
-					case 40: // TRASLADAR
-						downArrow = false;
-						break;
-					case 37: // ROTAR CW
-						leftArrow = false;
-						break;
-					case 39: // ROTAR CCW
-						rightArrow = false;
-						break;
-					case 83: // ESCALA AGRANDAR
-						scaleUp = false;
-						break;
-					case 87: // ESCALA DISMINUIR
-						scaleDown = false;
-						break;
+
+				scene = new THREE.Scene();
+
+				var light = new THREE.DirectionalLight( 0xffffff );
+				light.position.set( 0, 0, 1 );
+				scene.add( light );
+
+				// shadow
+
+				var canvas = document.createElement( 'canvas' );
+				canvas.width = 128;
+				canvas.height = 128;
+
+				var context = canvas.getContext( '2d' );
+				var gradient = context.createRadialGradient( canvas.width / 2, canvas.height / 2, 0, canvas.width / 2, canvas.height / 2, canvas.width / 2 );
+				gradient.addColorStop( 0.1, 'rgba(0,0,0,0.15)' );
+				gradient.addColorStop( 1, 'rgba(0,0,0,0)' );
+
+				context.fillStyle = gradient;
+				context.fillRect( 0, 0, canvas.width, canvas.height );
+
+
+				/*
+				var shadowTexture = new THREE.CanvasTexture( canvas );
+
+				var shadowMaterial = new THREE.MeshBasicMaterial( { map: shadowTexture, transparent: true } );
+				var shadowGeo = new THREE.PlaneBufferGeometry( 300, 300, 1, 1 );
+
+
+				var shadowMesh;
+
+				shadowMesh = new THREE.Mesh( shadowGeo, shadowMaterial );
+				shadowMesh.position.y = - 250;
+				shadowMesh.rotation.x = - Math.PI / 2;
+				scene.add( shadowMesh );
+
+				shadowMesh = new THREE.Mesh( shadowGeo, shadowMaterial );
+				shadowMesh.position.x = - 400;
+				shadowMesh.position.y = - 250;
+				shadowMesh.rotation.x = - Math.PI / 2;
+				scene.add( shadowMesh );
+
+				shadowMesh = new THREE.Mesh( shadowGeo, shadowMaterial );
+				shadowMesh.position.x = 400;
+				shadowMesh.position.y = - 250;
+				shadowMesh.rotation.x = - Math.PI / 2;
+				scene.add( shadowMesh );
+
+				var radius = 200;
+
+				var geometry1 = new THREE.IcosahedronBufferGeometry( radius, 1 );
+
+				var count = geometry1.attributes.position.count;
+				geometry1.addAttribute( 'color', new THREE.BufferAttribute( new Float32Array( count * 3 ), 3 ) );
+
+				var geometry2 = geometry1.clone();
+				var geometry3 = geometry1.clone();
+
+				var color = new THREE.Color();
+				var positions1 = geometry1.attributes.position;
+				var positions2 = geometry2.attributes.position;
+				var positions3 = geometry3.attributes.position;
+				var colors1 = geometry1.attributes.color;
+				var colors2 = geometry2.attributes.color;
+				var colors3 = geometry3.attributes.color;
+
+				for ( var i = 0; i < count; i ++ ) {
+
+					color.setHSL( ( positions1.getY( i ) / radius + 1 ) / 2, 1.0, 0.5 );
+					colors1.setXYZ( i, color.r, color.g, color.b );
+
+					color.setHSL( 0, ( positions2.getY( i ) / radius + 1 ) / 2, 0.5 );
+					colors2.setXYZ( i, color.r, color.g, color.b );
+
+					color.setRGB( 1, 0.8 - ( positions3.getY( i ) / radius + 1 ) / 2, 0 );
+					colors3.setXYZ( i, color.r, color.g, color.b );
+
 				}
-			};	  	
-			
-			document.addEventListener( 'keydown', onKeyDown, false );
-			document.addEventListener( 'keyup', onKeyUp, false );
-			
-			//ELEMENTOS DE ESCENA
-							  
+
+				var material = new THREE.MeshPhongMaterial( {
+					color: 0xffffff,
+					flatShading: true,
+					vertexColors: THREE.VertexColors,
+					shininess: 0
+				} );
+
+				var wireframeMaterial = new THREE.MeshBasicMaterial( { color: 0x000000, wireframe: true, transparent: true } );
+
+				var mesh = new THREE.Mesh( geometry1, material );
+				var wireframe = new THREE.Mesh( geometry1, wireframeMaterial );
+				mesh.add( wireframe );
+				mesh.position.x = - 400;
+				mesh.rotation.x = - 1.87;
+				scene.add( mesh );
+
+				var mesh = new THREE.Mesh( geometry2, material );
+				var wireframe = new THREE.Mesh( geometry2, wireframeMaterial );
+				mesh.add( wireframe );
+				mesh.position.x = 400;
+				scene.add( mesh );
+
+				var mesh = new THREE.Mesh( geometry3, material );
+				var wireframe = new THREE.Mesh( geometry3, wireframeMaterial );
+				mesh.add( wireframe );
+				scene.add( mesh );
+
+				
+				*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 			var size = 10;
 			var arrowSize = 1;
 			var divisions = size;
@@ -233,7 +252,7 @@
             var arrowZ = new THREE.ArrowHelper( z, origin, arrowSize, colorB );
 			
 			//CREAR LAS GEOMETRÍAS
-			geometry1 = new THREE.BoxGeometry( 1, 1, 1 );
+			var geometry1 = new THREE.BoxGeometry( 1, 1, 1 );
 			for ( var i = 0; i < geometry1.faces.length; i ++ ) {
 				switch(i){
 					case 0: case 1: geometry1.faces[ i ].color = colorRd; break;
@@ -244,7 +263,7 @@
 					case 10: case 11: geometry1.faces[ i ].color = colorBd; break;
 				}				
 			}
-			geometry2 = new THREE.CylinderGeometry( .5, .5, 1, 32 );
+			var geometry2 = new THREE.CylinderGeometry( .5, .5, 1, 32 );
 			for ( var i = 0; i < geometry2.faces.length; i++) { 
 				if( geometry2.faces[i].normal.y != 0) { 
 					geometry2.faces[i].color = colorGd; 
@@ -255,8 +274,8 @@
 			var material = new THREE.MeshBasicMaterial( { color: color1, vertexColors: THREE.FaceColors } );
 			
 			//CREAR LOS OBJETOS
-			hips = new THREE.Mesh( geometry1, material );	//CUBO
-			leftFoot = hips.clone();
+			var hips = new THREE.Mesh( geometry1, material );	//CUBO
+			var leftFoot = hips.clone();
 
 			var cubo2=new THREE.Mesh( geometry1, material );	
 			hips.add(cubo2);
@@ -273,32 +292,32 @@
 
 
 			//hips = new THREE.Mesh( geometry1, material );	//CUBO
-			leftFoot1 = hips.clone();
+			var leftFoot1 = hips.clone();
 
 			//hips = new THREE.Mesh( geometry1, material );	//CUBO
-			leftFoot2 = hips.clone();
+			var leftFoot2 = hips.clone();
 			
-			torso = new THREE.Mesh( geometry2, material ); //	
-			leftLeg = torso.clone();
-			leftLeg1 = torso.clone();
-			leftLeg2 = torso.clone();
-			leftLeg3 = torso.clone();
-			leftLeg4 = torso.clone();
-			leftLeg5 = torso.clone();
-			leftLeg6 = torso.clone();
-			leftLeg7 = torso.clone();
-			leftLeg8 = torso.clone();
+			var torso = new THREE.Mesh( geometry2, material ); //	
+			var leftLeg = torso.clone();
+			var leftLeg1 = torso.clone();
+			var leftLeg2 = torso.clone();
+			var leftLeg3 = torso.clone();
+			var leftLeg4 = torso.clone();
+			var leftLeg5 = torso.clone();
+			var leftLeg6 = torso.clone();
+			var leftLeg7 = torso.clone();
+			var leftLeg8 = torso.clone();
 
 			torso = new THREE.Mesh( geometry2, material ); //CILINDRO
-			rightLeg = torso.clone();
-			rightLeg1 = torso.clone();
-			rightLeg2 = torso.clone();
-			rightLeg3 = torso.clone();
-			rightLeg4 = torso.clone();
-			rightLeg5 = torso.clone();			
-			rightLeg6 = torso.clone();			
-			rightLeg7 = torso.clone();			
-			rightLeg8 = torso.clone();
+			var rightLeg = torso.clone();
+			var rightLeg1 = torso.clone();
+			var rightLeg2 = torso.clone();
+			var rightLeg3 = torso.clone();
+			var rightLeg4 = torso.clone();
+			var rightLeg5 = torso.clone();			
+			var rightLeg6 = torso.clone();			
+			var rightLeg7 = torso.clone();			
+			var rightLeg8 = torso.clone();
 			
 			leftLeg = new THREE.Mesh( geometry2, material ); //CILINDRO
 			
@@ -356,7 +375,7 @@ console.log("1");
 			
 		console.log("2");	
 			
-			rightFoot = leftFoot.clone();
+			var rightFoot = leftFoot.clone();
 			leftFoot.applyMatrix( new THREE.Matrix4().getInverse( leftLeg.matrix ) );
 			leftFoot.applyMatrix( new THREE.Matrix4().makeScale(.4,.4,.7) );
 			rightFoot.applyMatrix( new THREE.Matrix4().getInverse( rightLeg.matrix ) );
@@ -365,7 +384,7 @@ console.log("1");
 			rightFoot.applyMatrix( new THREE.Matrix4().makeTranslation(.5,-.75,0) );
 console.log("2.1");
 
-			rightFoot1 = leftFoot1.clone();
+			var rightFoot1 = leftFoot1.clone();
 			leftFoot1.applyMatrix( new THREE.Matrix4().getInverse( leftLeg3.matrix ) );
 			leftFoot1.applyMatrix( new THREE.Matrix4().makeScale(.4,.4,.7) );
 			rightFoot1.applyMatrix( new THREE.Matrix4().getInverse( rightLeg3.matrix ) );
@@ -373,7 +392,7 @@ console.log("2.1");
 			leftFoot1.applyMatrix( new THREE.Matrix4().makeTranslation(-.5,-.75,0) );
 			rightFoot1.applyMatrix( new THREE.Matrix4().makeTranslation(.5,-.75,0) );
 console.log("2.2");
-			rightFoot2 = leftFoot2.clone();
+			var rightFoot2 = leftFoot2.clone();
 			leftFoot2.applyMatrix( new THREE.Matrix4().getInverse( leftLeg6.matrix ) );
 			leftFoot2.applyMatrix( new THREE.Matrix4().makeScale(.4,.4,.7) );
 			rightFoot2.applyMatrix( new THREE.Matrix4().getInverse( rightLeg7.matrix ) );
@@ -387,8 +406,6 @@ console.log("2.2");
 			console.log("----");
 			//hips.add(head);
 			console.log("----");
-
-
 
 
 			
@@ -534,129 +551,102 @@ console.log("2.2");
 		  	scene.add( arrowY );	
 		  	scene.add( arrowZ );	
 			scene.add( hips );
-			//scene.add( leftLeg );
-			
-			//MOVER LA CAMARA
-			camera.position.x = 10;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+				renderer = new THREE.WebGLRenderer( { antialias: true } );
+				renderer.setPixelRatio( window.devicePixelRatio );
+				renderer.setSize( window.innerWidth, window.innerHeight );
+				container.appendChild( renderer.domElement );
+
+				stats = new Stats();
+				container.appendChild( stats.dom );
+	
+				document.addEventListener( 'mousemove', onDocumentMouseMove, false );
+
+
+			}
+
+			function onDocumentMouseMove( event ) {
+
+				mouseX = ( event.clientX - windowWidth / 2 );
+				mouseY = ( event.clientY - windowHeight / 2 );
+
+			}
+
+			function updateSize() {
+
+				if ( windowWidth != window.innerWidth || windowHeight != window.innerHeight ) {
+
+					windowWidth = window.innerWidth;
+					windowHeight = window.innerHeight;
+
+					renderer.setSize( windowWidth, windowHeight );
+
+				}
+
+			}
+
+			function animate() {
+
+				render();
+				stats.update();
+
+				requestAnimationFrame( animate );
+
+			}
+
+			function render() {
+
+				updateSize();
+
+				for ( var ii = 0; ii < views.length; ++ ii ) {
+
+					var view = views[ ii ];
+					var camera = view.camera;
+
+					camera.position.x = 10;
 			camera.position.y = 3;	 
 		  	camera.position.z = 10;			
-		  	camera.lookAt( origin );
-			
-			renderer.render( scene, camera );
+
+					view.updateCamera( camera, scene, mouseX, mouseY );
+
+					var left = Math.floor( windowWidth * view.left );
+					var bottom = Math.floor( windowHeight * view.bottom );
+					var width = Math.floor( windowWidth * view.width );
+					var height = Math.floor( windowHeight * view.height );
+
+					renderer.setViewport( left, bottom, width, height );
+					renderer.setScissor( left, bottom, width, height );
+					renderer.setScissorTest( true );
+					renderer.setClearColor( view.background );
+
+					camera.aspect = width / height;
+					camera.updateProjectionMatrix();
+					camera.lookAt(new THREE.Vector3( 0, 0, 0 ));
+					renderer.render( scene, camera );
+
+				}
+
 			}
-    
-    function animate() {
-        render();
-        requestAnimationFrame( animate );
-    }
-    
-    function render(){
-        var dtime = Date.now()-startTime;
-		var tx=0, ty=0, tz=0;	//Variables para traslacion
-		var sc = 1;				//Variable para escala
-		var theta=0;			//Variable para ángulo de rotacion de piernas
-		var sigma=0;			//Variable para ángulo de rotación de caderas
-		
-		if(thetaSum>=60*Math.PI/180)
-			positivo = false;
-		if(thetaSum<=-60*Math.PI/180)
-			positivo = true;
-		
-		if(upArrow) {
-			tx=0; ty=0; tz=.1;
-			if(positivo)
-				theta = .1;
-			else
-				theta = -.1;
-		}
-		if(downArrow) {
-			tx=0; ty=0; tz=-.1;
-			if(positivo)
-				theta = .1;
-			else
-				theta = -.1;
-		}
-		thetaSum+=theta;
-		
-		if(rightArrow)
-			sigma = -.1;
-		if(leftArrow)
-			sigma = .1;
-		
-		//MATRIZ DE TRASLACIÓN
-		var t = new THREE.Matrix4();
-		t.set( 	1, 0, 0, tx,
-				0, 1, 0, ty, 
-				0, 0, 1, tz,
-				0, 0, 0, 1	);
-		
-		hips.matrix.multiply(t); 	//APLICAR LA TRASLACIÓN A NIVEL LOCAL
-		
-		//ROTACIONES
-		var ct1 = Math.cos(theta);
-		var ct2 = Math.cos(-theta);
-		var cs = Math.cos(sigma);
-		var st1 = Math.sin(theta);
-		var st2 = Math.sin(-theta);
-		var ss = Math.sin(sigma);
-		var r = new THREE.Matrix4();
-		var r1 = new THREE.Matrix4();
-		var r2 = new THREE.Matrix4();
 
-		//MATRIZ DE ROTACIÓN EN EJE Y
-		r.set( 	   cs,  0, ss, 0,
-					0,  1,  0, 0, 
-				  -ss,  0, cs, 0,
-					0,  0,  0, 1 );	
-		//MATRICES DE ROTACIÓN EN EJE LOCAL DE PIERNAS	
-		r1.set( 	1,  0,  0, 0,
-					0, ct1,-st1, 0, 
-					0, st1, ct1, 0,
-					0,  0,  0, 1 );	
-		r2.set( 	1,  0,  0, 0,
-					0, ct2,-st2, 0, 
-					0, st2, ct2, 0,
-					0,  0,  0, 1 );							
-		
-		//ROTACION EN UN EJE PARALELO
-		var tempMatrix = new THREE.Matrix4();
-		tempMatrix.copyPosition( hips.matrix );
-		hips.applyMatrix( new THREE.Matrix4().getInverse(tempMatrix) );
-		hips.applyMatrix(r);
-		hips.applyMatrix( tempMatrix );
+		</script>
 
-		leftLeg.applyMatrix(r1);
-		rightLeg.applyMatrix(r1);
-		
-				
-
-
-		for ( var ii = 0; ii < views.length; ++ ii ) {
-			var view = views[ ii ];
-			var camera = view.camera;
-
-			view.updateCamera( camera, scene, mouseX, mouseY );
-
-			var left = Math.floor( windowWidth * view.left );
-			var bottom = Math.floor( windowHeight * view.bottom );
-			var width = Math.floor( windowWidth * view.width );
-			var height = Math.floor( windowHeight * view.height );
-
-			renderer.setViewport( left, bottom, width, height );
-			renderer.setScissor( left, bottom, width, height );
-			renderer.setScissorTest( true );
-			renderer.setClearColor( view.background );
-
-			camera.aspect = width / height;
-			camera.updateProjectionMatrix();
-
-			renderer.render( scene, camera );
-
-		}
-
-        //camera.lookAt( 0, 0, 0 );
-        //renderer.render( scene, camera );
-    }
-    </script>
-  </body>
+	</body>
 </html>
