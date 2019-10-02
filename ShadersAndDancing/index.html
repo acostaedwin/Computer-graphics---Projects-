@@ -47,9 +47,14 @@
 			  transition:800ms ease all;
 			}
 		</style>
+		<script type="text/javascript">
+			function fin(){
+				//alert("termino");
+			}
+		</script>
 	</head>
 
-	<body>
+	<body onload="fin();">
 
 <audio id="myAudio" loop>>  
   <source src="audio.mp3" type="audio/mpeg">
@@ -62,7 +67,7 @@
 		</div>
 		<div id="my-div">
 			<!--canvas id='canvas' width='500px' height='500px'></canvas-->
-			<button id='button' style="left:25%; top:75%" onClick="animateClick()">ANIMAR</button> 
+			<button id='buttonA' disabled="true" style="left:25%; top:75%; background-color: gray;" onClick="animateClick()">Cargando...</button> 
 			<button id='button' style="left:75%; top:75%" onClick="stopClick()">DETENER</button> 
 		</div>
 
@@ -138,6 +143,9 @@
 				// model
 				var loader = new THREE.FBXLoader();
 				loader.load( 'HipHopDancing.fbx', function ( object ) {
+					document.getElementById("buttonA").style="left:25%; top:75%;";
+					document.getElementById("buttonA").disabled=false;
+					document.getElementById("buttonA").innerHTML="ANIMAR";
 					
 					object.mixer = new THREE.AnimationMixer( object );
 					mixers.push( object.mixer );
