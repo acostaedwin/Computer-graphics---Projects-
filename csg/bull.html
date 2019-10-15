@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Bull - Edwin Acosta</title>
+    <style>
+      html, body { margin: 0; padding: 0; overflow: hidden; }
+    </style>
+  </head>
+  <body onload="iniciar();">
+  	<audio id="myAudio" loop>
+  		<source src="bufalo_africano.mp3" type="audio/mpeg">
+  		Your browser does not support the audio element.	
+	</audio>
+    <script src="js/three.js"></script>
+	<script src="js/controls/OrbitControls.js"></script>
+	<script src="js/csg.js"></script>
+	<script src="js/THREE.CSG.js"></script>
+	<script src="js/my_functions.js"></script>
+    <script>
+    	function iniciar(){
+    		var x = document.getElementById("myAudio"); 
+    		console.log(x);
+    		x.play();
+    	}
+		var scene, aspect, camera, renderer, controls;
+		init();
+		animate();
+		function init(){
+			//INICIALIZACIÓN
+	        scene = new THREE.Scene();
+	        aspect = window.innerWidth / window.innerHeight;
+	        camera = new THREE.PerspectiveCamera( 75, aspect, 0.1, 1000);
+	        renderer = new THREE.WebGLRenderer();
+	        renderer.setSize( window.innerWidth, window.innerHeight );
+	        document.body.appendChild( renderer.domElement );
+			controls = new THREE.OrbitControls( camera, renderer.domElement );
+			
+			//ELEMENTOS COMUNES
+			var size = 100;
+			var arrowSize = 1;
+			var divisions = size;
+			var origin = new THREE.Vector3( 0, 0, 0 );
+			var x = new THREE.Vector3( 1, 0, 0 );
+			var y = new THREE.Vector3( 0, 1, 0 );
+		  	var z = new THREE.Vector3( 0, 0, 1 );
+		  	var color = new THREE.Color( 0x333333 );
+		  	var colorR = new THREE.Color( 0xAA3333 );
+		  	var colorG = new THREE.Color( 0x33AA33 );
+		  	var colorB = new THREE.Color( 0x333366 );
+			
+		  	//CREAR LAS GRILLAS PARA EL ESCENARIO
+		  	var axesHelper = new THREE.AxesHelper( size );
+			scene.add( axesHelper );
+			
+		  	var gridHelperXZ = new THREE.GridHelper( size, divisions, color, color );
+			scene.add( gridHelperXZ );
+            
+            //ROTARLAS PARA QUE QUEDEN EN EL ESPACIO ADECUADO
+            gridHelperXZ.rotateOnWorldAxis ( y, THREE.Math.degToRad(90) );
+
+            //CREAR ILUMINACIÓN
+            var ambient = new THREE.AmbientLight( 0xffffff, 2 );
+            scene.add( ambient );
+			
+            var pointLight = new THREE.PointLight( 0xffffff, 1, 100 );
+            pointLight.position.set( -5, -2, 5 );
+            scene.add( pointLight );
+			
+            var pointLight = new THREE.PointLight( 0xffffff, .5, 100 );
+            pointLight.position.set( 5, -2, -5 );
+            scene.add( pointLight );
+			
+
+            var cube = CSG.cube({center:[0,1,0]});
+			var sphere = CSG.sphere({ radius: 1.35, stacks: 12});
+			var cylinder = myCylinder([0,0,0],5,6,20,5,0xffff00);
+			var pyramid=myPyramid([0,0,0],1,1);
+			
+								
+			//////////////////////////////////////
+			var cuerpo = myCylinder([0,15,0],5,7,20,5,0xffff00);
+			cuerpo.rotateX(THREE.Math.degToRad(90));
+			cuerpo.rotateY(THREE.Math.degToRad(36));
+		
+			
+
+
+			var a=myPyramid([0,14,-18],6,11);
+			a.rotateX(THREE.Math.degToRad(180));
+			a.rotateY(THREE.Math.degToRad(45));
+			//var b = CSG.cube({radius: 3,center:[0,9,-18]});
+
+			var b = new THREE.Mesh( new THREE.BoxGeometry( 5, 5, 5 ) );
+			b.position.set(0,10,-18);
+					
+			var cabezaCSG=THREE.CSG.fromMesh(a).subtract(THREE.CSG.fromMesh(b));
+			//scene.add(THREE.CSG.toMesh(cabezaCSG));
+
+			
+			
+			
+			
+			var cuello = myCylinder([0,18,-13],3,3,10,8,0xffff99);
+			cuello.rotateX(THREE.Math.degToRad(90));
+			//cuello.rotateY(THREE.Math.degToRad(45));
+			//scene.add(cuello);
+
+			//scene.add(THREE.CSG.toMesh(result));
+
+			var result1=cabezaCSG.union(THREE.CSG.fromMesh(cuello));
+			var result2=result1.union(THREE.CSG.fromMesh(cuerpo));
+
+
+			//cabeza superior
+			var c = new THREE.Mesh( new THREE.BoxGeometry(8,4,8) );
+			c.position.set(0,21,-18);
+			//scene.add(c);
+
+			//orejas
+			var d = myCylinder([0,20,-18],1,1,13,5,0xffff00);
+			d.rotateZ(THREE.Math.degToRad(90));
+			//scene.add(d);
+
+			//cacho 1
+			var e=myPyramid([-5,25,-18],1,10);
+			e.rotateZ(THREE.Math.degToRad(30));
+			scene.add(e);
+
+			//cacho 2
+			var f=myPyramid([5,25,-18],1,10);
+			f.rotateZ(THREE.Math.degToRad(-30));
+			scene.add(f);
+
+			var cCSG=THREE.CSG.fromMesh(c);
+			var dCSG=THREE.CSG.fromMesh(d);
+			var eCSG=THREE.CSG.fromMesh(e);
+			var fCSG=THREE.CSG.fromMesh(f);
+			var result3=cCSG.union(dCSG);
+			
+			//scene.add(THREE.CSG.toMesh(result1));
+			
+			//scene.add(THREE.CSG.toMesh(result3));
+
+			var result4=result1.union(result3);
+			scene.add(THREE.CSG.toMesh(result4));
+
+
+			//ojos
+			var geometry = new THREE.SphereGeometry(1,32,32 );
+			var material = new THREE.MeshBasicMaterial( {color: 0xff0000} );
+			var g = new THREE.Mesh( geometry, material );
+			g.position.set(-2,20,-22);
+			scene.add(g);
+
+			var geometry = new THREE.SphereGeometry(1,32,32 );
+			var material = new THREE.MeshBasicMaterial( {color: 0xff0000} );
+			var h = new THREE.Mesh( geometry, material );
+			h.position.set(2,20,-22);
+			scene.add(h);
+
+
+			var i = myCylinder([0,18,15],1,1,11,5,0xffff00);
+			i.rotateX(THREE.Math.degToRad(90));
+			//scene.add(i);
+
+			var j = myCylinder([-2,5,-5],1,1,11,5,0xffff00);			
+			scene.add(j);
+			var k = myCylinder([2,5,-5],1,1,11,5,0xffff00);			
+			scene.add(k);
+
+			var l = myCylinder([-2,5,5],1,1,11,5,0xffff00);			
+			scene.add(l);
+			var m = myCylinder([2,5,5],1,1,11,5,0xffff00);			
+			scene.add(m);
+
+			var result5=result2.union(THREE.CSG.fromMesh(i));
+			scene.add(THREE.CSG.toMesh(result5));
+
+			//scene.add(cylinder2);
+			//scene.add( sphere );		//ACTIVAR PARA VISUALIZAR LA ESFERA
+
+			camera.position.x = 5;
+			camera.position.y = 25;
+		  	camera.position.z = 100;
+			camera.lookAt( origin );
+		}
+		function animate(){
+			requestAnimationFrame( animate );
+			controls.update();
+			render();
+		}
+		function render(){
+			renderer.render( scene, camera );
+		}		
+    </script>
+  </body>
+</html>
