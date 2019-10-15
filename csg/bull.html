@@ -6,7 +6,9 @@
       html, body { margin: 0; padding: 0; overflow: hidden; }
     </style>
   </head>
-  <body onload="iniciar();">  	
+  <body onload="iniciar();">
+  	<button onclick="playAudio();" type="button">Iniciar sonido</button>
+  	<button onclick="pauseAudio();" type="button">Pausar sonido</button>
   	<audio id="myAudio" loop>
   		<source src="media/bufalo_africano.mp3" type="audio/mpeg">
   		Your browser does not support the audio element.	
@@ -26,7 +28,14 @@
 			    playPromise.catch(() => { x.play(); })
 			}
     	}
-    
+
+    	function playAudio() {
+		  x.play();
+		}
+
+		function pauseAudio() {
+		  x.pause();
+		}
 		var scene, aspect, camera, renderer, controls;
 		init();
 		animate();
