@@ -6,7 +6,7 @@
       html, body { margin: 0; padding: 0; overflow: hidden; }
     </style>
   </head>
-  <body onload="iniciar();">
+  <body onload="iniciar();">  	
   	<audio id="myAudio" loop>
   		<source src="media/bufalo_africano.mp3" type="audio/mpeg">
   		Your browser does not support the audio element.	
@@ -17,11 +17,16 @@
 	<script src="js/THREE.CSG.js"></script>
 	<script src="js/my_functions.js"></script>
     <script>
+    	var x = document.getElementById("myAudio"); 
+
     	function iniciar(){
-    		var x = document.getElementById("myAudio"); 
-    		console.log(x);
-    		x.play();
+
+			const playPromise = x.play();
+			if (playPromise !== null){
+			    playPromise.catch(() => { x.play(); })
+			}
     	}
+    
 		var scene, aspect, camera, renderer, controls;
 		init();
 		animate();
