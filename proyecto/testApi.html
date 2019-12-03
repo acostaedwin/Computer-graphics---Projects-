@@ -6,51 +6,93 @@
 <body>
 
 	<div>     
+		<select id="ciudad" onchange="cambiarCiudad(this.value);">
+			<option value="-1">Actual</option>
+			<option value="1">Otra</option>
+		</select>
+		<input type="text" name="ciudadName" id="ciudadName" readonly="true">
     	<p id="result"></p>
     	<p id="result2"></p>
-    	<button id="showTemp">Submit</button>  
+    	<p id="result3"></p>
+    	<button id="showTemp" type="button" onclick="boton();">Submit</button>  
   	</div>    
 	<script src="https://code.jquery.com/jquery-1.11.3.js"></script>
 
-	<script type="text/javascript">
-		$(document).ready(function () {
-	  		var lat, lon, api_url;
-	  
-	  		if ("geolocation" in navigator) {    
-			    $('#showTemp').on('click', function () {
-			       navigator.geolocation.getCurrentPosition(gotLocation);
+	<script type="text/javascript">		
+		function cambiarCiudad(v){
+			console.log(v);
+			if(v=="-1"){
+				document.getElementById("ciudadName").readOnly=true;
+			}else{
+				document.getElementById("ciudadName").readOnly=false;
+			}
+		}
+		function boton(){
 
-			      function gotLocation(position) {
-			        lat = position.coords.latitude;
-			        lon = position.coords.longitude;
-			        
-			        api_url = 'https://api.openweathermap.org/data/2.5/weather?lat=' +
-			                  lat + '&lon=' + 
-			                  lon + '&units=metric&appid=b231606340553d9174136f7f083904b3';
-			       // http://api.openweathermap.org/data/2.5/weather?q=London,uk&callback=test&appid=b1b15e88fa79722
-			        
-			        $.ajax({
-			          url : api_url,
-			          method : 'GET',
-			          success : function (data) {
-			            
-			            var tempr = data.main.temp;
-			            var location = data.name;
-			            var desc = data.weather.description;
-			            
+	  		var ciudad=document.getElementById("ciudad").value;
+	  		console.log("ciudad: "+ciudad);
+	  		if(ciudad=="-1"){
+	  			if ("geolocation" in navigator) {    				    
+					navigator.geolocation.getCurrentPosition(gotLocation);
+					function gotLocation(position) {
+			        	lat = position.coords.latitude;
+			        	lon = position.coords.longitude;			        
+			        	console.log("siiiii");
+			        	sendRequestByGeo(lat,lon);
+			     	}		    		  
+				} else {
+			    	alert('Your browser doesnt support geolocation. Sorry.');
+			  	}
+	  		}else{	  			
+	  			sendRequestByName(document.getElementById("ciudadName").value);
+	  		}	  		
+		}
 
 
-			            $('#result').text(tempr + '°' + location);
-			            $('#result2').text(JSON.stringify(data));
+		function sendRequestByGeo(latP,lonP){			
+			var api_url = 'https://api.openweathermap.org/data/2.5/weather?lat=' +
+			                  latP + '&lon=' + 
+			                lonP + '&units=metric&appid=0e0fb3b4292553905b1e7702f706e101';			
+	        $.ajax({
+				url : api_url,
+				method : 'GET',
+				success : function (data) {	            
+	            setContent(data);
+	          },
+	          	error : function (xhr, ajaxOptions, thrownError){
+				    if(xhr.status==404) {
+				        alert(thrownError);
+				    }
+				}
+	        });
+		}
+		function sendRequestByName(name){			
+			var api_url = 'https://api.openweathermap.org/data/2.5/weather?q=' +
+			                  name.replace(" ","")+'&units=metric&appid=0e0fb3b4292553905b1e7702f706e101';
+			console.log(api_url+" - "+api_url);
+	        $.ajax({
+	          url : api_url,
+	          method : 'GET',
+	          success : function (data) {	            
+	            setContent(data);
+	          },
+	          error : function (xhr, ajaxOptions, thrownError){
+				    if(xhr.status==404) {
+				        alert("Ciudad no encontrada.");
+				    }
+				}
+	        });
+		}
+		function setContent(data){
+				var tempr = data.main.temp;
+	            var location = data.name;
+	            var desc = data.weather.description;			            
 
-			          }
-			        });
-			     }
-	    	});   
-			} else {
-		    	alert('Your browser doesnt support geolocation. Sorry.');
-		  	}
-		});
+	            $('#result').text(tempr + '°' + location);
+	            $('#result2').text(JSON.stringify(data));
+	            $('#result3').text("visibility: "+data.visibility);
+	            console.log(JSON.stringify(data));
+		}
 
 	</script>
 

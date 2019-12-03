@@ -5,6 +5,7 @@
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
 		<link type="text/css" rel="stylesheet" href="main.css">
+		<script src="https://code.jquery.com/jquery-1.11.3.js"></script>
 		<style>
 			body {
 				color: #333;
@@ -18,20 +19,100 @@
 		<div id="container"></div>
 
 		<div id="info">
-			<span><input type="date" name="" onchange="recargar(this);"></span>
-			<span>01 de mayo del 1997</span>
+			<div>     
+				<select id="ciudad" onchange="cambiarCiudad(this.value);">
+					<option value="-1">Localización actual</option>
+					<option value="1">Otra</option>
+				</select>
+				<input type="text" name="ciudadName" id="ciudadName" readonly="true">
+		    	<p id="result"></p>		    	
+		    	<p id="result3"></p>
+		    	<p id="result4"></p>
+		    	<button id="showTemp" type="button" onclick="boton();">Ver</button>  
+		  	</div> 
 		</div>
+		<script type="text/javascript">
+			function cambiarCiudad(v){
+				console.log(v);
+				if(v=="-1"){
+					document.getElementById("ciudadName").readOnly=true;
+				}else{
+					document.getElementById("ciudadName").readOnly=false;
+				}
+			}
+			function boton(){
+
+			  		var ciudad=document.getElementById("ciudad").value;
+			  		console.log("ciudad: "+ciudad);
+			  		if(ciudad=="-1"){
+			  			if ("geolocation" in navigator) {    				    
+							navigator.geolocation.getCurrentPosition(gotLocation);
+							function gotLocation(position) {
+					        	lat = position.coords.latitude;
+					        	lon = position.coords.longitude;			        
+					        	console.log("siiiii");
+					        	sendRequestByGeo(lat,lon);
+					     	}		    		  
+						} else {
+					    	alert('Your browser doesnt support geolocation. Sorry.');
+					  	}
+			  		}else{	  			
+			  			sendRequestByName(document.getElementById("ciudadName").value);
+			  		}	  		
+				}
+
+
+				function sendRequestByGeo(latP,lonP){			
+					var api_url = 'https://api.openweathermap.org/data/2.5/weather?lat=' +
+					                  latP + '&lon=' + 
+					                lonP + '&units=metric&appid=0e0fb3b4292553905b1e7702f706e101';			
+			        $.ajax({
+						url : api_url,
+						method : 'GET',
+						success : function (data) {	            
+			            setContent(data);
+			          },
+			          	error : function (xhr, ajaxOptions, thrownError){
+						    if(xhr.status==404) {
+						        alert(thrownError);
+						    }
+						}
+			        });
+				}
+				function sendRequestByName(name){			
+					var api_url = 'https://api.openweathermap.org/data/2.5/weather?q=' +
+					                  name.replace(" ","")+'&units=metric&appid=0e0fb3b4292553905b1e7702f706e101';
+					console.log(api_url+" - "+api_url);
+			        $.ajax({
+			          url : api_url,
+			          method : 'GET',
+			          success : function (data) {	            
+			            setContent(data);
+			          },
+			          error : function (xhr, ajaxOptions, thrownError){
+						    if(xhr.status==404) {
+						        alert("Ciudad no encontrada.");
+						    }
+						}
+			        });
+				}
+				function setContent(data){
+						var tempr = data.main.temp;
+			            var location = data.name;
+			            var desc = data.weather.description;			            
+
+			            $('#result').text(tempr + '° ' + location);
+			            $('#result2').text(JSON.stringify(data));
+			            $('#result3').text("Visibility: "+data.visibility);
+			            $('#result4').text("Neblina: "+data.clouds.all);
+			            console.log(JSON.stringify(data));
+
+			            recargar(data);
+				}
+		</script>
 
 		<script id="fragmentShaderNoise" type="x-shader/x-fragment">
-
-			//
-			// Description : Array and textureless GLSL 3D simplex noise function.
-			//      Author : Ian McEwan, Ashima Arts.
-			//  Maintainer : ijm
-			//     Lastmod : 20110409 (stegu)
-			//     License : Copyright (C) 2011 Ashima Arts. All rights reserved.
-			//               Distributed under the MIT License. See LICENSE file.
-			//
+			
 
 			uniform float time;
 			varying vec2 vUv;
@@ -178,8 +259,9 @@
 
 			var SCREEN_WIDTH = window.innerWidth;
 			var SCREEN_HEIGHT = window.innerHeight;
-
-			var renderer, container, stats;
+			var nieblita=false;
+			//var 
+			var renderer, container, stats;		
 
 			var camera, scene, controls;
 			var cameraOrtho, sceneRenderTarget;
@@ -404,21 +486,18 @@
 				camera.updateProjectionMatrix();
 
 			}
-
-			//
-
+			
 			function onKeyDown( event ) {
-
+				/*
 				switch ( event.keyCode ) {
 
-					case 78: /*N*/ lightDir *= - 1; break;
-					case 77: /*M*/ animDeltaDir *= - 1; break;
-
+					case 78: lightDir *= - 1; break; //N
+					case 77: animDeltaDir *= - 1; break; //M
 				}
-
+				*/
 			}
-
-			//
+			
+		
 
 			function animate() {
 
@@ -432,6 +511,8 @@
 			function render() {
 
 				var delta = clock.getDelta();
+				//console.log("lightDir: "+lightDir);
+				//console.log("nieblita: "+nieblita);
 
 				if ( terrain.visible ) {
 
@@ -442,7 +523,10 @@
 					var valNorm = ( lightVal - fLow ) / ( fHigh - fLow );
 
 					scene.background.setHSL( 0.1, 0.5, lightVal );
-					scene.fog.color.setHSL( 0.1, 0.5, lightVal );
+					if(nieblita==true){
+						scene.fog.color.setHSL( 0.1, 0.5, lightVal );	
+					}
+					
 
 					directionalLight.intensity = THREE.Math.mapLinear( valNorm, 0, 1, 0.1, 1.15 );
 					pointLight.intensity = THREE.Math.mapLinear( valNorm, 0, 1, 0.9, 1.5 );
@@ -466,7 +550,7 @@
 						quadTarget.material = mlib[ 'normal' ];
 						renderer.setRenderTarget( normalMap );
 						renderer.clear();
-						renderer.render( sceneRenderTarget, cameraOrtho );
+						renderer.render(sceneRenderTarget, cameraOrtho);
 
 					}
 
@@ -476,9 +560,30 @@
 				}
 
 			}
-			function recargar(obj){
-				console.log("Recargando... : "+obj.value);
-				lightDir *= - 1
+			function recargar(data){
+				console.log("recagando...");
+				
+				//data.visibility
+			    //data.clouds.all
+			    var visibility=parseInt(data.visibility);
+			    var clouds=parseInt(data.clouds.all);
+
+			    if(visibility>10000){
+			    	lightDir = 1;
+			    }else{
+			    	lightDir = -1;
+			    }
+
+			    
+			    if(clouds>50){
+			    	nieblita=true;
+			    }else{
+			    	nieblita=false;
+			    }
+			    console.log("lightDir: "+lightDir);
+			    console.log("nieblita: "+nieblita);
+			    
+
 			}
 			window.recargar = recargar;
 		</script>
