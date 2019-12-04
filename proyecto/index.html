@@ -5,7 +5,8 @@
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
 		<link type="text/css" rel="stylesheet" href="main.css">
-		<script src="https://code.jquery.com/jquery-1.11.3.js"></script>
+		<link rel="stylesheet" href="./js/rain/style.css">
+		<!--script src="https://code.jquery.com/jquery-1.11.3.js"></script-->
 		<style>
 			body {
 				color: #333;
@@ -15,7 +16,12 @@
 			}
 		</style>
 	</head>
-	<body>
+	<body class="back-row-toggle splat-toggle">
+		
+			<div class="rain back-row"></div>	  				  	
+  		
+
+
 		<div id="container"></div>
 
 		<div id="info">
@@ -25,9 +31,10 @@
 					<option value="1">Otra</option>
 				</select>
 				<input type="text" name="ciudadName" id="ciudadName" readonly="true">
-		    	<p id="result"></p>		    	
-		    	<p id="result3"></p>
-		    	<p id="result4"></p>
+		    	<p id="result" style="font-size: 20px;color: white;"></p>	
+		    	<p id="result5" style="font-size: 15px;color: white;"></p>	
+		    	<p id="result3" style="font-size: 16px;color: white;"></p>
+		    	<p id="result4" style="font-size: 16px;color: white;"></p>
 		    	<button id="showTemp" type="button" onclick="boton();">Ver</button>  
 		  	</div> 
 		</div>
@@ -105,6 +112,9 @@
 			            $('#result2').text(JSON.stringify(data));
 			            $('#result3').text("Visibility: "+data.visibility);
 			            $('#result4').text("Neblina: "+data.clouds.all);
+			            $('#result5').text(data.weather[0].description);
+
+			            
 			            console.log(JSON.stringify(data));
 
 			            recargar(data);
@@ -562,13 +572,42 @@
 			}
 			function recargar(data){
 				console.log("recagando...");
+
+			
+
+  				
 				
 				//data.visibility
 			    //data.clouds.all
 			    var visibility=parseInt(data.visibility);
 			    var clouds=parseInt(data.clouds.all);
-
+			    var temp=parseFloat(data.main.temp);
+			    var des=data.weather[0].description;
+			    /*
 			    if(visibility>10000){
+			    	lightDir = 1;
+			    }else{
+			    	lightDir = -1;
+			    }*/
+
+			    if(des.includes("rain")){
+			    	console.log("lluvia");
+			    	$('body').removeClass('single-toggle');
+					$('body').addClass('back-row-toggle');
+  					$('.back-row-toggle.toggle').addClass('active');
+			    }else{
+			    	console.log("NO lluvia");
+			    	//$('.back-row-toggle.toggle').removeClass('active');
+			    	$('body').removeClass('back-row-toggle');
+			    	$('body').addClass('single-toggle');
+					$('.single-toggle.toggle').addClass('active');
+					  
+			    }
+
+				  makeItRain();
+  					
+
+			    if(temp>15){
 			    	lightDir = 1;
 			    }else{
 			    	lightDir = -1;
@@ -580,6 +619,9 @@
 			    }else{
 			    	nieblita=false;
 			    }
+
+
+
 			    console.log("lightDir: "+lightDir);
 			    console.log("nieblita: "+nieblita);
 			    
@@ -587,5 +629,7 @@
 			}
 			window.recargar = recargar;
 		</script>
+		<script src='https://code.jquery.com/jquery-2.2.4.min.js'></script>
+		<script  src="./js/rain/script.js"></script>
 	</body>
 </html>
